@@ -1,7 +1,7 @@
 
 Projet
 ===
-Mon projet comporte deux fichier un fichier main.py qui contient ma fonction de crréation de machine vietuelle et task.py qui 
+Mon projet comporte un dossier question 7 qui contient deux fichier un fichier main.py qui contient ma fonction de crréation de machine vietuelle et task.py qui 
 
 Problème que j'ai rencontré
 ===
