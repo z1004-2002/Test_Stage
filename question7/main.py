@@ -1,75 +1,63 @@
-##Import des libraries
-from pyVim.connect import SmartConnect
-from pyVmomi import vim
-from task import wait_for_tasks
 import json
+from pyVim.connect import SmartConnect, Disconnect
+from pyVmomi import vim
+import ssl
 
-"""
-Mon code n'a pas fonctionné
-"""
+# Configuration de la connexion
+host = "192.168.235.129"
+username = "root"
+password = "mr@bel2.0"
 
-#iNFORMATIONS DE CONNEXION
-host_ip = '192.168.235.129'
-username = 'root'
-password = 'mr@bel2.0'
+# Ignorer les erreurs SSL
+context = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+context.verify_mode = ssl.CERT_NONE
 
-#FONCTION DE CONNECTION À L'ESXi
-def connect():
-    service_instance = SmartConnect(host=host_ip, user=username, pwd=password, disableSslCertValidation=True)
-    return service_instance.RetrieveContent()
+# Connexion à l'ESXi
+si = SmartConnect(host=host, user=username, pwd=password, sslContext=context)
 
+# Charger le fichier de configuration JSON
+with open('config.json') as f:
+    config = json.load(f)
 
-##fonction de définition des configuration
-def create_config_spec(datastore_name, name, memory=1, guest="Guest",
-                       annotation="Sample", cpus=1):
-    config = vim.vm.ConfigSpec()
-    config.annotation = annotation
-    config.memoryMB = int(memory)
-    config.guestId = guest
-    config.name = name
-    config.numCPUs = cpus
-    files = vim.vm.FileInfo()
-    files.vmPathName = "["+datastore_name+"]"
-    config.files = files
-    return config
+number_of_instances = config["number_of_instances"]
+ova_file = config["ova_file"]
 
-##fonction de création de la VM
-def create_dummy_vm(vm_name, si, vm_folder, resource_pool, datastore):
-    config = vim.vm.ConfigSpec(name=vm_name, memoryMB=4096, numCPUs=2, guestId='otherGuest')
-    datastore_path = f'[{datastore}] {vm_name}/{vm_name}.vmx'
-    config.files = vim.vm.FileInfo(vmPathName=datastore_path)
-    resource_pool.CreateVM_Task(config=config)
-    #config = create_config_spec(datastore.name, vm_name)
-    #vm_folder.CreateVM_Task(config=config, pool=resource_pool)
-   
-#fonction pour attacher l'ISO 
-def attach_iso(si, vm_name, iso_path):
-    vm = si.content.searchIndex.FindByDnsName(dnsName=vm_name, vmSearch=True)
-    if vm:
-        cdrom_spec = vim.vm.device.VirtualDeviceSpec()
-        cdrom_spec.operation = vim.vm.device.VirtualDeviceSpec.Operation.add
-        cdrom_spec.device = vim.vm.device.VirtualCdrom()
-        cdrom_spec.device.backing = vim.vm.device.VirtualCdromIsoBackingInfo()
-        cdrom_spec.device.backing.fileName = iso_path
-        cdrom_spec.device.connectable = vim.vm.device.VirtualDevice.ConnectInfo()
-        cdrom_spec.device.connectable.startConnected = True
-        cdrom_spec.device.connectable.allowGuestControl = True
-        vm.config.hardware.device.append(cdrom_spec.device)
-        task = vm.ReconfigVM_Task(spec=vim.vm.ConfigSpec(deviceChange=[cdrom_spec]))
-        
-
-# Utilisation
-
-#définition de la fonction principale 
-def main():
-    si = connect()
-    datacenter = si.rootFolder.childEntity[0]
-    vm_folder = datacenter.vmFolder
-    resource_pool = datacenter.resourcePool.resourcePool[0]
-    datastore = datacenter.datastore[0]
+# Fonction pour déployer l'OVA
+def deploy_ova(ova_file, number_of_instances):
+        # Récupérer le gestionnaire de contenu
+    content = si.RetrieveContent()
     
-    create_dummy_vm('abel', si, vm_folder, resource_pool, datastore)
-    attach_iso(si, 'abel', '[datastore1] test/Core-5.4.iso')
+    # Spécifier le chemin du datastore et le nom du dossier
+    datastore_name = "datastore1"
+    vm_folder = content.rootFolder.childEntity[0].vmFolder
+    
+    # Charger le fichier OVA
+    with open(ova_file, 'rb') as ova:
+        ova_data = ova.read()
 
-if __name__ == "__main__":
-    main()
+    # Déployer les instances
+    for i in range(number_of_instances):
+        vm_name = f"tinyVM-{i+1}"
+        print(f"Déploiement de {vm_name}...")
+
+        # Créer une configuration pour la VM
+        ovf_manager = content.ovfManager
+        ovf_descriptor = ovf_manager.CreateDescriptor(ova_data)
+
+        # Importer l'OVA
+        task = ovf_manager.ImportVApp(ovf_descriptor, vm_folder)
+
+        # Attendre la fin de la tâche
+        while task.info.state == vim.TaskInfo.State.running:
+            pass
+        
+        if task.info.state == vim.TaskInfo.State.success:
+            print(f"{vm_name} déployé avec succès.")
+        else:
+            print(f"Échec du déploiement de {vm_name}: {task.info.error}")
+
+# Appel de la fonction pour déployer les instances
+deploy_ova(ova_file, number_of_instances)
+
+# Déconnexion
+Disconnect(si)

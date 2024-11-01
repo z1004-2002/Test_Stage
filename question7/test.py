@@ -3,6 +3,7 @@ from pyVim.connect import SmartConnect, Disconnect
 from pyVmomi import vim
 import ssl
 
+
 # Configuration de la connexion
 host = "192.168.235.129"
 username = "root"
@@ -13,7 +14,7 @@ context = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
 context.verify_mode = ssl.CERT_NONE
 
 # Connexion à l'ESXi
-si = SmartConnect(host=host, user=username, pwd=password, sslContext=context)
+si = SmartConnect(host=host, user=username, pwd=password, disableSslCertValidation=True)
 
 # Charger le fichier de configuration JSON
 with open('config.json') as f:
