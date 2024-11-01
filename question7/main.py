@@ -69,7 +69,7 @@ def main():
     datastore = datacenter.datastore[0]
     
     create_dummy_vm('abel', si, vm_folder, resource_pool, datastore)
-    attach_iso(si, 'abel', '[Datastore1] test/Core-5.4.iso')
+    attach_iso(si, 'abel', '[datastore1] test/Core-5.4.iso')
 
 if __name__ == "__main__":
     main()
