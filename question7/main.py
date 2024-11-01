@@ -31,6 +31,7 @@ def create_dummy_vm(vm_name, si, vm_folder, resource_pool, datastore):
     vm_folder.CreateVM_Task(config=config, pool=resource_pool)
     
 
+#définition de la fonction principale 
 def main():
     si = connect()
     datacenter = si.rootFolder.childEntity[0]
