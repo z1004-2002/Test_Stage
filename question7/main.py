@@ -27,7 +27,8 @@ def create_config_spec(datastore_name, name, memory=1, guest="Guest",
     return config
 
 def create_dummy_vm(vm_name, si, vm_folder, resource_pool, datastore):
-    vm_folder.C
+    config = create_config_spec(datastore.name, vm_name)
+    vm_folder.CreateVM_Task(config=config, pool=resource_pool)
     
 
 def main():
