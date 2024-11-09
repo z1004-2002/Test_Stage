@@ -1,0 +1,6 @@
+{
+    "datacenter": "ha-datacenter",
+    "datastore": "datastore1",
+    "vm_name_prefix": "from_scratch_VM_",
+    "iso_path":"[datastore1] test/Core-5.4.iso"
+}

@@ -1,0 +1,7 @@
+{
+    "ovf_path": "tinyVM.ova",
+    "datacenter": "ha-datacenter",
+    "datastore": "datastore1",
+    "num_instances": 1,
+    "host_name":"localhost.localdomain"
+}

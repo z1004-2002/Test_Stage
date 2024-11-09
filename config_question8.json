@@ -1,0 +1,8 @@
+{
+    "ovf_path": "tinyVM.ova",
+    "datacenter": "ha-datacenter",
+    "datastore": "datastore1",
+    "num_instances": 1,
+    "vm_name_prefix": "tinyVM_",
+    "num_clones": 2
+}
