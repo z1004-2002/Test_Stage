@@ -1,7 +1,7 @@
 
 Projet de déploiment des machines machines virtuelles de trois façons différentes sur un ESXi avec la bibliothèque pyVmomi de Python
 =
-notre projet est constitué de fichier  `question7.py`, `utils_classes.py`, et `config_question7.json` pour la question 7, `question8.py` et `config_question8.json` pour la question 8, `question9.py` et `config_question9.json` pour la question 9, `tinyVM.ova` qui est OVA des VM que nous déploiyons, un `README.md` et un `.gitignore`.
+notre projet est constitué de fichier  `question7.py`, `utils_classes.py`, et `config_question7.json` pour la question 7, `question8.py`, `test.py` et `config_question8.json` pour la question 8, `question9.py` et `config_question9.json` pour la question 9, `tinyVM.ova` qui est OVA des VM que nous déploiyons, un `README.md` et un `.gitignore`.
 
 ## Question 7: déploiement d'un image OVA (tinyVM)
 > ### config_question7.json
@@ -17,7 +17,6 @@ Dans notre fichier `config_question7.json` nous mettons les configurations qui s
 Dans notre fichier `question7.py` implémentons notre code pour réponre à la question 7. Dans ce fichier, nous avons déclaré plusiers fonctions à savoir:
 * **connect_to_esxi**: fonction permettant de ce connecter à l'ESXi;
 * **get_resource_pool**: qui retourne la ressource_pool à partir du dataventer;
-* **handle_lease**: fonction de gestion du retour de la fonction de création d'une machine virtuel;
 * **deploy_ova**: fonction de déploiement d'une machine virtuelle;
 * **main**: fonction principale du fichier `question7.py`.
 
@@ -50,9 +49,21 @@ Dans notre fichier `question8.py` implémentons notre code pour réponre à la q
 * **get_resource_pool**: qui retourne la ressource_pool à partir du dataventer;
 * **handle_lease**: fonction de gestion du retour de la fonction de création d'une machine virtuel;
 * **deploy_ova**: fonction de déploiement d'une machine virtuelle;
-
 * **main**: fonction principale du fichier `question8.py`.
 
+> ### test.py
+Dans ce fichier, j'ai essayé une autre approche en faisant un copié-collé en commande SSH. et créer une vm qui pointe sur les copies de l'original, mais en fait de compte, je n'ai pas pu finir d'exploiter cette voie. et l'erreur que j'ai eu est celle ci dessous
+```
+Traceback (most recent call last):
+  File "/home/zogning-abel/Desktop/Test_Stage/test.py", line 159, in <module>
+    main()
+  File "/home/zogning-abel/Desktop/Test_Stage/test.py", line 129, in main
+    vim.vm.device.VirtualDeviceConfigSpec(
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/zogning-abel/miniconda3/lib/python3.12/site-packages/pyVmomi/VmomiSupport.py", line 248, in __getattr__
+    raise AttributeError(attr)
+AttributeError: VirtualDeviceConfigSpec
+```
 
 ### problèmes rencontrés
 1. Les VM que nous avons déployé ne suportte pas la méthode `MarkAsTemplate` qui permet de transformer le la VM en template. et l'érreur de retour est que 

@@ -51,7 +51,6 @@ def main():
     vm_name_prefix = config['vm_name_prefix']
     num_clones = config["num_clones"]
     source_vm_name = f"{vm_name_prefix}"
-    clone_vm_name = f"{source_vm_name}_clone"
     # Connect to ESXi
     si = connect_to_esxi(esxi_host, esxi_user, esxi_password)
 
@@ -68,16 +67,18 @@ def main():
     
     # Clone the VM
     print(f"Cloning VM {source_vm_name} to {clone_vm_name}...")
-    task = clone_vm(si, source_vm, clone_vm_name, datastore_clone)
+    for i in range(num_clones):
+        clone_vm_name = f"{source_vm_name}_clone{i+1}"
+        task = clone_vm(si, source_vm, clone_vm_name, datastore_clone)
 
-    # Wait for the task to finish
-    while task.info.state == vim.TaskInfo.State.running:
-        print("Cloning in progress...")
-    
-    if task.info.state == vim.TaskInfo.State.success:
-        print("VM cloned successfully.")
-    else:
-        print(f"Failed to clone VM: {task.info.error}")
+        # Wait for the task to finish
+        while task.info.state == vim.TaskInfo.State.running:
+            print("Cloning in progress...")
+        
+        if task.info.state == vim.TaskInfo.State.success:
+            print("VM cloned successfully.")
+        else:
+            print(f"Failed to clone VM: {task.info.error}")
 
 if __name__ == "__main__":
     main()

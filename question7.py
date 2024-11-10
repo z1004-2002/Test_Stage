@@ -24,34 +24,6 @@ def get_resource_pool(datacenter):
     #Ici nous utilisont la première ressource pool
     return datacenter.hostFolder.childEntity[0].resourcePool
 
-def handle_lease(lease, ova_file):
-    with tarfile.open(ova_file, 'r:') as tar:
-        for member in tar.getmembers():
-            # Transférer uniquement les disques
-            if member.name.endswith(".vmdk"):  
-                disk_file = tar.extractfile(member)
-                for device_url in lease.info.deviceUrl:
-                    if device_url.importKey == member.name:
-                        print(f"Transfert de {member.name} vers {device_url.url}...")
-                        # Initialiser la progression
-                        lease.HttpNfcLeaseProgress(0)  
-                        
-                        # Écrire le contenu du fichier sur l'URL HTTP NFS
-                        with requests.put(device_url.url, data=disk_file, verify=False) as response:
-                            if response.status_code == 200:
-                                print(f"{member.name} transféré avec succès.")
-                            else:
-                                print(f"Erreur lors du transfert de {member.name}: {response.status_code}")
-                                lease.HttpNfcLeaseAbort(Exception("Erreur de transfert"))
-                                return
-
-                        # Marquer la fin de la progression
-                        lease.HttpNfcLeaseProgress(100)
-
-    # Terminer le bail
-    lease.HttpNfcLeaseComplete()
-    print("Transfert terminé et bail libéré.")
-
 def deploy(si,datastore_name,ova_file,datacenter_name,esxi_host):
     content = si.RetrieveContent()
     
@@ -115,11 +87,8 @@ def main():
     datastore_name = config['datastore']
     
     for i in range(number_of_instances):
-        print(f"deploiement de la VM {i}")
+        print(f"deploiement de la VM {i+1}")
         deploy(si,datastore_name,ova_file,datacenter_name,esxi_host)
-
-    
-
 
 if __name__ == "__main__":
     main()
