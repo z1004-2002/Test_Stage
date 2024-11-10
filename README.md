@@ -83,7 +83,7 @@ Dans notre fichier `config_question9.json` nous mettons les configurations qui s
 * **datacenter**: qui est le nom de notre datacenter;
 * **datastore**: qui est le nom de notre datastore;
 * **vm_name_prefix**: qui est le préfix des noms des machines à déployer;
-* **iso_path**: qui est le chemin vers le fichier .io avec lequel nous allons créer notre machine virtuelle from scrach;
+* **iso_path**: qui est le chemin vers le fichier `.iso` avec lequel nous allons créer notre machine virtuelle from scrach;
 
 > ### question9.py
 Dans notre fichier `question9.py` implémentons notre code pour réponre à la question 9. Dans ce fichier, nous avons déclaré plusiers fonctions à savoir:
@@ -92,11 +92,11 @@ Dans notre fichier `question9.py` implémentons notre code pour réponre à la q
 * **get_vm_by_name**: fonction qui retourne la vm à partir de son nom;
 * **get_ovf_descriptor**: cette fonction retourne le desscripteur de l'ova que nous voulons déployer;
 * **create_dummy_vm**: fonction qui crée une machine virtuelle vide
+* **cdrom**: fonction pour créer le CDROM, attacher l’ISO et modifier la VM;
+* **power_on_vm**: fonction qui allume une VM à partir de son nom;
+* **main**: fonction principale du fichier `question9.py`;
 * **get_physical_cdrom**: ;
 * **find_free_ide_controller**: ;
 * **get_physical_cdrom**: ;
 * **new_cdrom_spec**: ;
-* **find_device**: ;
-* **cdrom**: fonction pour créer le CDROM, attacher l’ISO et modifier la VM;
-* **power_on_vm**: fonction qui allume une VM à partir de son nom;
-* **main**: fonction principale du fichier `question9.py`.
+* **find_device**: .

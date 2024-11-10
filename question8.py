@@ -1,6 +1,3 @@
-import ssl
-import atexit
-from pyVim.connect import SmartConnect, Disconnect
 from pyVmomi import vim
 import json
 from question7 import connect_to_esxi
@@ -53,7 +50,7 @@ def main():
     datastore_clone = config['datastore']
     vm_name_prefix = config['vm_name_prefix']
     num_clones = config["num_clones"]
-    source_vm_name = f"{vm_name_prefix}1"
+    source_vm_name = f"{vm_name_prefix}"
     clone_vm_name = f"{source_vm_name}_clone"
     # Connect to ESXi
     si = connect_to_esxi(esxi_host, esxi_user, esxi_password)
@@ -67,7 +64,7 @@ def main():
         print(f"VM {source_vm_name} not found.")
         return
     
-    vm_to_template(source_vm)
+    #vm_to_template(source_vm)
     
     # Clone the VM
     print(f"Cloning VM {source_vm_name} to {clone_vm_name}...")

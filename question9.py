@@ -1,8 +1,5 @@
 import json
-import ssl
-from pyVim.connect import SmartConnect, Disconnect # type: ignore
 from pyVmomi import vim # type: ignore
-import atexit
 from pyVim.task import WaitForTask # type: ignore
 import time
 from question7 import connect_to_esxi
@@ -42,7 +39,7 @@ def create_dummy_vm(vm_name, si,datastore_name,datacenter_name):
                                vmPathName=datastore_path)
 
     config = vim.vm.ConfigSpec(name=vm_name, memoryMB=128, numCPUs=1,
-                               files=vmx_file, guestId='dosGuest',
+                               files=vmx_file, guestId='otherLinuxGuest',
                                version='vmx-07')
 
     print("Creating VM {}...".format(vm_name))
@@ -171,6 +168,7 @@ def main():
     create_dummy_vm(vm_name, si,datastore_name,datacenter_name)
     #fonction pour attacher l'ISO
     cdrom(si, vm_name, iso_path)
+    #mise en marche de notre nouvelle vm
     power_on_vm(si,vm_name)
     
     

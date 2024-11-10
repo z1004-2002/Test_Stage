@@ -3,6 +3,6 @@
     "datacenter": "ha-datacenter",
     "datastore": "datastore1",
     "num_instances": 1,
-    "vm_name_prefix": "tinyVM_",
+    "vm_name_prefix": "tinyVM",
     "num_clones": 2
 }

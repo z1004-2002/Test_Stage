@@ -115,6 +115,7 @@ def main():
     datastore_name = config['datastore']
     
     for i in range(number_of_instances):
+        print(f"deploiement de la VM {i}")
         deploy(si,datastore_name,ova_file,datacenter_name,esxi_host)
 
     
